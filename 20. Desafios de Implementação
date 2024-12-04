@@ -1,0 +1,120 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <chrono>
+#include <cmath>
+using namespace std;
+using namespace chrono;
+
+void exibirVetor(const vector<int>& vec) {
+    for (int num : vec) cout << num << " ";
+    cout << endl;
+}
+
+void bubbleSort(vector<int>& vec) {
+    for (size_t i = 0; i < vec.size() - 1; i++) {
+        for (size_t j = 0; j < vec.size() - i - 1; j++) {
+            if (vec[j] > vec[j + 1]) swap(vec[j], vec[j + 1]);
+        }
+    }
+}
+
+void quickSort(vector<int>& vec, int low, int high) {
+    if (low < high) {
+        int pivot = vec[high];
+        int i = low - 1;
+        for (int j = low; j < high; j++) {
+            if (vec[j] < pivot) swap(vec[++i], vec[j]);
+        }
+        swap(vec[i + 1], vec[high]);
+        quickSort(vec, low, i);
+        quickSort(vec, i + 2, high);
+    }
+}
+
+int buscaLinear(const vector<int>& vec, int x) {
+    for (size_t i = 0; i < vec.size(); i++) {
+        if (vec[i] == x) return i;
+    }
+    return -1;
+}
+
+int jumpSearch(const vector<int>& vec, int x) {
+    size_t n = vec.size();
+    size_t step = sqrt(n);
+    size_t prev = 0;
+
+    while (vec[min(step, n) - 1] < x) {
+        prev = step;
+        step += sqrt(n);
+        if (prev >= n) return -1;
+    }
+    for (size_t i = prev; i < min(step, n); i++) {
+        if (vec[i] == x) return i;
+    }
+    return -1;
+}
+
+int main() {
+    vector<int> lista = {35, 12, 43, 8, 51, 25, 67, 4, 10, 3};
+    int escolha, elemento;
+    
+    cout << "Lista original: ";
+    exibirVetor(lista);
+
+    cout << "\nEscolha um algoritmo de ordenação:\n";
+    cout << "1. Bubble Sort\n";
+    cout << "2. Quick Sort\n";
+    cout << "Opção: ";
+    cin >> escolha;
+
+    vector<int> listaOrdenada = lista; // Copia para preservar a lista original
+    auto inicio = high_resolution_clock::now();
+
+    if (escolha == 1) {
+        bubbleSort(listaOrdenada);
+    } else if (escolha == 2) {
+        quickSort(listaOrdenada, 0, listaOrdenada.size() - 1);
+    } else {
+        cout << "Opção inválida!\n";
+        return 1;
+    }
+
+    auto fim = high_resolution_clock::now();
+    auto duracaoOrdenacao = duration_cast<microseconds>(fim - inicio);
+
+    cout << "\nLista ordenada: ";
+    exibirVetor(listaOrdenada);
+    cout << "Tempo de ordenação: " << duracaoOrdenacao.count() << " microssegundos\n";
+
+    cout << "\nEscolha um algoritmo de busca:\n";
+    cout << "1. Busca Linear\n";
+    cout << "2. Jump Search\n";
+    cout << "Elemento a buscar: ";
+    cin >> elemento;
+    cout << "Opção: ";
+    cin >> escolha;
+
+    inicio = high_resolution_clock::now();
+    int resultado;
+    if (escolha == 1) {
+        resultado = buscaLinear(listaOrdenada, elemento);
+    } else if (escolha == 2) {
+        resultado = jumpSearch(listaOrdenada, elemento);
+    } else {
+        cout << "Opção inválida!\n";
+        return 1;
+    }
+
+    fim = high_resolution_clock::now();
+    auto duracaoBusca = duration_cast<microseconds>(fim - inicio);
+
+    if (resultado != -1)
+        cout << "\nElemento encontrado no índice: " << resultado << endl;
+    else
+        cout << "\nElemento não encontrado.\n";
+
+    cout << "Tempo de busca: " << duracaoBusca.count() << " microssegundos\n";
+
+    return 0;
+}
