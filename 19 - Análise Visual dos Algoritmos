@@ -1,0 +1,188 @@
+-------------------Merge Sort------------------------
+
+#include <iostream>
+#include <vector>
+#include <chrono>
+#include <thread>
+using namespace std;
+
+void printArray(const vector<int>& arr) {
+    for (int num : arr) {
+        cout << num << " ";
+    }
+    cout << endl;
+}
+
+void merge(vector<int>& arr, int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    vector<int> leftArr(n1);
+    vector<int> rightArr(n2);
+
+    for (int i = 0; i < n1; i++)
+        leftArr[i] = arr[left + i];
+    for (int i = 0; i < n2; i++)
+        rightArr[i] = arr[mid + 1 + i];
+
+    int i = 0, j = 0, k = left;
+
+    while (i < n1 && j < n2) {
+        if (leftArr[i] <= rightArr[j]) {
+            arr[k] = leftArr[i];
+            i++;
+        } else {
+            arr[k] = rightArr[j];
+            j++;
+        }
+        k++;
+        printArray(arr);
+        this_thread::sleep_for(chrono::milliseconds(200));
+    }
+
+    while (i < n1) {
+        arr[k] = leftArr[i];
+        i++;
+        k++;
+        printArray(arr);
+        this_thread::sleep_for(chrono::milliseconds(200));
+    }
+
+    while (j < n2) {
+        arr[k] = rightArr[j];
+        j++;
+        k++;
+        printArray(arr);
+        this_thread::sleep_for(chrono::milliseconds(200));
+    }
+}
+
+void mergeSort(vector<int>& arr, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
+    }
+}
+
+int main() {
+    vector<int> arr = {38, 27, 43, 3, 9, 82, 10};
+
+    cout << "Array original: ";
+    printArray(arr);
+
+    mergeSort(arr, 0, arr.size() - 1);
+
+    cout << "Array ordenado (Merge Sort): ";
+    printArray(arr);
+
+    return 0;
+}
+
+-------------------Quick Sort------------------------
+
+#include <iostream>
+#include <vector>
+#include <chrono>
+#include <thread>
+using namespace std;
+
+void printArray(const vector<int>& arr) {
+    for (int num : arr) {
+        cout << num << " ";
+    }
+    cout << endl;
+}
+
+void swap(int& a, int& b) {
+    int temp = a;
+    a = b;
+    b = temp;
+}
+
+int partition(vector<int>& arr, int low, int high) {
+    int pivot = arr[high];
+    int i = low - 1;
+
+    for (int j = low; j < high; j++) {
+        if (arr[j] <= pivot) {
+            i++;
+            swap(arr[i], arr[j]);
+            printArray(arr);
+            this_thread::sleep_for(chrono::milliseconds(200));
+        }
+    }
+    swap(arr[i + 1], arr[high]);
+    printArray(arr);
+    this_thread::sleep_for(chrono::milliseconds(200));
+    return i + 1;
+}
+
+void quickSort(vector<int>& arr, int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+
+int main() {
+    vector<int> arr = {38, 27, 43, 3, 9, 82, 10};
+
+    cout << "Array original: ";
+    printArray(arr);
+
+    quickSort(arr, 0, arr.size() - 1);
+
+    cout << "Array ordenado (Quick Sort): ";
+    printArray(arr);
+
+    return 0;
+}
+
+-------------------Selection Sort------------------------
+
+#include <iostream>
+#include <vector>
+#include <chrono>
+#include <thread>
+using namespace std;
+
+void printArray(const vector<int>& arr) {
+    for (int num : arr) {
+        cout << num << " ";
+    }
+    cout << endl;
+}
+
+void selectionSort(vector<int>& arr) {
+    int n = arr.size();
+    for (int i = 0; i < n - 1; i++) {
+        int minIdx = i;
+        for (int j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIdx]) {
+                minIdx = j;
+            }
+        }
+        swap(arr[minIdx], arr[i]);
+        printArray(arr);
+        this_thread::sleep_for(chrono::milliseconds(200));
+    }
+}
+
+int main() {
+    vector<int> arr = {38, 27, 43, 3, 9, 82, 10};
+
+    cout << "Array original: ";
+    printArray(arr);
+
+    selectionSort(arr);
+
+    cout << "Array ordenado (Selection Sort): ";
+    printArray(arr);
+
+    return 0;
+}
+
+
